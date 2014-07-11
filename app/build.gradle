@@ -1,0 +1,55 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.github.jcandksolutions.gradle:android-unit-test:1.2.+'
+    }
+}
+apply plugin: 'android'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1.0"
+
+    defaultConfig {
+        applicationId "com.testing.unittestingmodules.app"
+        minSdkVersion 9
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+apply plugin: 'android-unit-test'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:19.+'
+    testCompile 'org.robolectric:robolectric:2.3'
+    testCompile 'junit:junit:4.11'
+    compile project (":library")
+}
+
+gradle.projectsEvaluated {
+    sourceSets.each { set ->
+        println "SET NAME:: " + (set.name + "\n");
+        def libraryTestSources = "$project.rootDir" + "\\library\\src\\test\\java";
+        if (set.name.equals('testDebug')) {
+            set.java.srcDir libraryTestSources
+        }
+    }
+}
+
+
